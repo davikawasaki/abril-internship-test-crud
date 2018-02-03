@@ -2,6 +2,14 @@
     <div class="container p-2 mt-3 d-flex justify-content-center">
         <h1>CRUD de Produtos</h1>
     </div>
+    <%if(error){%>
+        <div class="container d-flex justify-content-center alert alert-danger" role="alert">
+            <span>Erros:&nbsp;</span>
+            <%for(let i=0; i<error.length;i++) {%>
+                <span><%=error[i].msg%>&nbsp;</span>
+            <%}%>
+        </div>
+    <%}else{}%>
     <div class="container">
         <div class="row bg-primary border-bottom rounded p-1 text-white">
             <div class="col d-flex justify-content-center">Nome</div>
@@ -21,8 +29,8 @@
                     <span><%=products[i].preco%></span>
                 </div>
                 <div class="col d-flex justify-content-center align-items-center">
-                    <button type="button" class="btn btn-warning m-1">Editar</button>
-                    <button type="button" class="btn btn-danger m-1">Deletar</button>
+                    <button type="button" class="btn btn-warning m-1" id="btn-edit-product" onclick="fillProductForm(event, <%=products[i].id%>, '<%=products[i].nome%>', '<%=products[i].descricao%>', <%=products[i].preco%>)">Editar</button>
+                    <button type="button" class="btn btn-danger m-1" id="btn-delete-product" onclick="deleteProduct(event, <%=products[i].id%>)">Deletar</button>
                 </div>
             </div>
         <%}%>
@@ -46,10 +54,105 @@
                     <input class="form-control" id="preco" name="preco" type="text" placeholder="Digite o preço do produto" />
                 </div>
                 <div class="d-flex flex-row-reverse">
-                    <div class="m-1"><button type="submit" class="btn btn-outline-primary">Enviar</button></div>
-                    <div class="m-1"><button type="submit" class="btn btn-outline-secondary">Limpar</button></div>
+                    <div class="m-1"><button onclick="editProduct(event)" id="btn-edit-send" class="btn btn-outline-primary">Editar</button></div>
+                    <div class="m-1"><button type="submit" id="btn-save-send" class="btn btn-outline-primary">Enviar</button></div>
+                    <div class="m-1"><button onclick="clearForm(event)" class="btn btn-outline-secondary">Limpar</button></div>
                 </div>
             </form>
         </div>
     </div>
+    <script>
+        let productStoredId = null;
+
+        function deleteProduct(event, id) {
+            event.preventDefault();
+            let xhr = new XMLHttpRequest();
+            xhr.open("DELETE", '/products', true);
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.setRequestHeader("Accept", "application/json");
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState == 4) {
+                    if (xhr.status == 200) {
+                        alert('Produto deletado com sucesso!');
+                        location.reload();
+                    } else {
+                        alert('Não foi possível deletar esse produto! Tente novamente mais tarde.');
+                    }
+                }
+            };
+            xhr.send(JSON.stringify({id}));
+        }
+
+        function fillProductForm(event, productId, productName, productDescription, productPrice) {
+            let $ = document.querySelector.bind(document);
+            let inputName = $('#nome');
+            let inputDescription = $('#descricao');
+            let inputPrice = $('#preco');
+            let btnEditSend = $('#btn-edit-send');
+            let btnSaveSend = $('#btn-save-send');
+
+            inputName.value = productName;
+            inputDescription.value = productDescription;
+            inputPrice.value = productPrice;
+            productStoredId = productId;
+
+            btnEditSend.style.display = 'block';
+            btnSaveSend.style.display = 'none';
+        }
+
+        function editProduct(event) {
+            event.preventDefault();
+            let $ = document.querySelector.bind(document);
+            let inputName = $('#nome');
+            let inputDescription = $('#descricao');
+            let inputPrice = $('#preco');
+            let product = {
+                id: productStoredId,
+                nome: inputName.value,
+                descricao: inputDescription.value,
+                preco: inputPrice.value
+            };
+            let xhr = new XMLHttpRequest();
+            xhr.open("PUT", '/products', true);
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.setRequestHeader("Accept", "application/json");
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState == 4) {
+                    if (xhr.status == 200) {
+                        alert('Produto editado com sucesso!');
+                        location.reload();
+                    } else {
+                        if(xhr.responseText) {
+                            const errors = JSON.parse(xhr.responseText);
+                            errMsg = '';
+                            errors.forEach(err => {
+                                errMsg = errMsg + ' ' + err.msg;
+                            });
+                            if(errMsg) alert(errMsg);
+                            else alert('Ocorreu um erro ao editar esse produto! Tente novamente mais tarde.');
+                        } else alert('Ocorreu um erro ao editar esse produto! Tente novamente mais tarde.');
+                    }
+                }
+            };
+            xhr.send(JSON.stringify(product));
+        }
+
+        function clearForm(event) {
+            event.preventDefault();
+            let $ = document.querySelector.bind(document);
+            let inputName = $('#nome');
+            let inputDescription = $('#descricao');
+            let inputPrice = $('#preco');
+
+            let btnEditSend = $('#btn-edit-send');
+            let btnSaveSend = $('#btn-save-send');
+
+            inputName.value = '';
+            inputDescription.value = '';
+            inputPrice.value = '';
+
+            btnEditSend.style.display = 'none';
+            btnSaveSend.style.display = 'block';
+        }
+    </script>
 <% include footer %>
