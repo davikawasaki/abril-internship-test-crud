@@ -21,14 +21,16 @@ function createDBConnection(database) {
     else if(process.env.NODE_ENV == 'production') {
         const connectionUrl = process.env.CLEARDB_DATABASE_URL;
         const connectionSplitted = connectionUrl.match(/mysql:\/\/(.*):(.*)@(.*)\/(.*)\?/);
+        console.log(connectionSplitted);
 
         basicConnection = {
             host     : connectionSplitted[3],
             user     : connectionSplitted[1],
-            password : connectionSplitted[2]
+            password : connectionSplitted[2],
+            database : connectionSplitted[4]
         };
 
-        if(database) basicConnection.database = connectionSplitted[4];
+        dbName = connectionSplitted[4];
 
         return mysql.createConnection(basicConnection);
     }
