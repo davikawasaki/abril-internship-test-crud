@@ -11,3 +11,7 @@ form {
 html.height-100, html.height-100 body, html.height-100 body div.container, html.height-100 body div.row {
     height: 100%;
 }
+
+#btn-edit-send {
+    display: none;
+}
