@@ -9,5 +9,17 @@ const server = app.listen(port, () => {
 
     console.log(`Running server at http://${usedHost}:${usedPort}`);
 
-    connectionFactory.createInfrastructure();
-})
+    connectionFactory.createInfrastructure()
+        .then(response => connectionFactory.createDBConnection(true))
+        .then(conn => connectionFactory.setConnection(conn));
+});
+
+server.on('close', () => {
+    console.log("Closing out remaining connections.");
+    connectionFactory.getConnection().end();
+    console.log("DB connection closed.");
+});
+
+process.on('SIGINT', () => {
+    server.close();
+});

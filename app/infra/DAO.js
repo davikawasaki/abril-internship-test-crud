@@ -2,51 +2,26 @@ const connectionFactory = require('./connectionFactory');
 
 module.exports = class DAO {
     constructor(tableName) {
-        this._connection = null;
         this._tableName = tableName;
     }
 
     insertOne (object) {
-        return connectionFactory.createDBConnection(true)
-            .then(conn => {
-                this._connection = conn;
-                return this._connection.query('INSERT INTO ' + this._tableName + ' SET ?', object)
-            });
+        return connectionFactory.getConnection().query('INSERT INTO ' + this._tableName + ' SET ?', object);
     }
 
     listAll () {
-        return connectionFactory.createDBConnection(true)
-            .then(conn => {
-                this._connection = conn;
-                return this._connection.query('SELECT * FROM ' + this._tableName)
-            });
+        return connectionFactory.getConnection().query('SELECT * FROM ' + this._tableName);
     }
 
     getById (id) {
-        return connectionFactory.createDBConnection(true)
-            .then(conn => {
-                this._connection = conn;
-                return this._connection.query('SELECT * FROM ' + this._tableName + ' WHERE id=?', id)
-            });
+        return connectionFactory.getConnection().query('SELECT * FROM ' + this._tableName + ' WHERE id=?', id);
     }
 
     updateById (object) {
-        return connectionFactory.createDBConnection(true)
-            .then(conn => {
-                this._connection = conn;
-                return this._connection.query('UPDATE ' + this._tableName + ' SET ? WHERE id=' + object.id + ';', object);
-            })
+        return connectionFactory.getConnection().query('UPDATE ' + this._tableName + ' SET ? WHERE id=' + object.id + ';', object);
     }
 
     deleteById (id) {
-        return connectionFactory.createDBConnection(true)
-            .then(conn => {
-                this._connection = conn;
-                return this._connection.query('DELETE FROM ' + this._tableName + ' WHERE id=?', id)
-            });
-    }
-
-    closeConnection () {
-        return this._connection.end();
+        return connectionFactory.getConnection().query('DELETE FROM ' + this._tableName + ' WHERE id=?', id);
     }
 }

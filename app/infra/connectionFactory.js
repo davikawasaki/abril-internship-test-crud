@@ -3,9 +3,17 @@ const mysql = require('promise-mysql');
 let dbName = 'crudabrilinternship';
 const dbTestName = 'crudabrilinternshiptest';
 let basicConnection = {host : 'localhost', user : 'root', password : 'root'};
-let conn = null
 
-// Factory method
+let connection = null
+
+function setConnection(conn) {
+    if(!connection) connection = conn;
+}
+
+function getConnection() {
+    return connection;
+}
+
 function createDBConnection(database) {
     // DB for development
     if(!process.env.NODE_ENV) {
@@ -76,7 +84,7 @@ function createInfrastructure() {
             'REFERENCES Cliente(id) ' +
             'ON DELETE CASCADE ON UPDATE CASCADE );';
 
-    createDatabase()
+    return createDatabase()
         .then(response => {
             return conn.query(productsQuery);
         })
@@ -89,4 +97,4 @@ function createInfrastructure() {
 }
 
 // Prototype wrapper
-module.exports = { createDBConnection, createInfrastructure }
+module.exports = { createDBConnection, createInfrastructure, setConnection, getConnection }
