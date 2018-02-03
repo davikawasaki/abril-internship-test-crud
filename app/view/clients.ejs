@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Clientes</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-grid.min.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+    <div class="container p-2 mt-3 d-flex justify-content-center">
+        <h1>CRUD de Clientes</h1>
+    </div>
+    <div class="container">
+        <div class="row bg-primary border-bottom rounded p-1 text-white">
+            <div class="col d-flex justify-content-center">Nome</div>
+            <div class="col d-flex justify-content-center">Email</div>
+            <div class="col d-flex justify-content-center">Telefone</div>
+            <div class="col d-flex justify-content-center">Ações</div>
+        </div>
+        <div class="row active border-bottom rounded p-1">
+            <%for(let i=0; i<clients.length;i++) {%>
+                <div class="col d-flex justify-content-center align-items-center">
+                    <span><%=clients[i].nome%></span>
+                </div>
+                <div class="col d-flex justify-content-center align-items-center">
+                    <span><%=clients[i].email%></span>
+                </div>
+                <div class="col d-flex justify-content-center align-items-center">
+                    <span><%=clients[i].telefone%></span>
+                </div>
+                <div class="col d-flex justify-content-center align-items-center">
+                    <button type="button" class="btn btn-warning m-1">Editar</button>
+                    <button type="button" class="btn btn-danger m-1">Deletar</button>
+                </div>
+            <%}%>
+        </div>
+    </div>
+    <div class="container mt-5">
+        <div class="row bg-primary border-bottom rounded p-1 text-white">
+            <div class="col d-flex justify-content-center">Cadastro/Atualização</div>
+        </div>
+        <div class="form row bg-light p-3 rounded">
+            <form action="/clients" method="post">
+                <div class="form-group">
+                    <label for="name">Nome</label>
+                    <input class="form-control" id="name" name="name" type="text" placeholder="Digite o nome do cliente" />
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input class="form-control" id="email" name="email" type="text" placeholder="Digite o email do cliente" />
+                </div>
+                <div class="form-group">
+                    <label for="phone">Telefone</label>
+                    <input class="form-control" id="phone" name="phone" type="text" placeholder="Digite o telefone do cliente" />
+                </div>
+                <div class="d-flex flex-row-reverse">
+                    <div class="m-1"><button type="submit" class="btn btn-outline-primary">Enviar</button></div>
+                    <div class="m-1"><button type="submit" class="btn btn-outline-secondary">Limpar</button></div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
