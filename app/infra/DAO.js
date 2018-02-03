@@ -26,7 +26,7 @@ module.exports = class DAO {
         return connectionFactory.createDBConnection(true)
             .then(conn => {
                 this._connection = conn;
-                this._connection.query('SELECT * FROM ' + this._tableName + ' WHERE id=?', id)
+                return this._connection.query('SELECT * FROM ' + this._tableName + ' WHERE id=?', id)
             });
     }
 
@@ -34,15 +34,15 @@ module.exports = class DAO {
         return connectionFactory.createDBConnection(true)
             .then(conn => {
                 this._connection = conn;
-                this._connection.query('UPDATE ' + this._tableName + ' SET ? WHERE id=?', object, object.id)
-            });
+                return this._connection.query('UPDATE ' + this._tableName + ' SET ? WHERE id=' + object.id + ';', object);
+            })
     }
 
     deleteById (id) {
         return connectionFactory.createDBConnection(true)
             .then(conn => {
                 this._connection = conn;
-                this._connection.query('DELETE FROM ' + this._tableName + ' WHERE id=?', id)
+                return this._connection.query('DELETE FROM ' + this._tableName + ' WHERE id=?', id)
             });
     }
 
