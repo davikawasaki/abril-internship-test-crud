@@ -39,10 +39,15 @@ module.exports = class BaseCtrl {
      */
     save(res, next, object, page) {
         this._dao.insertOne(object)
-            .then(response => res.redirect(page))
+            .then(response => {
+                this._dao.closeConnection();
+                res.redirect(page);
+            })
             // Throwing errors to the next element of express flow
-            .catch(err => next(err));
-        tihs._dao.closeConnection();
+            .catch(err => {
+                this._dao.closeConnection();
+                next(err);
+            });
     };
 
     /**
@@ -54,10 +59,15 @@ module.exports = class BaseCtrl {
      */
     update(res, next, object, page) {
         this._dao.updateById(object)
-            .then(response => res.redirect(page))
+            .then(response => {
+                this._dao.closeConnection();
+                res.redirect(page);
+            })
             // Throwing errors to the next element of express flow
-            .catch(err => next(err));
-        tihs._dao.closeConnection();
+            .catch(err => {
+                this._dao.closeConnection();
+                next(err);
+            });
     };
 
     /**
@@ -69,10 +79,16 @@ module.exports = class BaseCtrl {
      */
     delete(res, next, idValue, page) {
         this._dao.deleteById(idValue)
-            .then(response => res.redirect(page))
+            .then(response => {
+                this._dao.closeConnection();
+                res.redirect(page);
+            })
             // Throwing errors to the next element of express flow
-            .catch(err => next(err));
-        tihs._dao.closeConnection();
+            .catch(err => {
+                this._dao.closeConnection();
+                next(err);
+            });
+        this._dao.closeConnection();
     };
 
     /**
@@ -85,6 +101,5 @@ module.exports = class BaseCtrl {
         let obj = {}
         obj[page] = results
         res.render(page, obj);
-        this._dao.closeConnection();
     };
 }
