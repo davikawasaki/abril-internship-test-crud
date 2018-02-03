@@ -20,6 +20,10 @@ module.exports = () => {
         res.redirect('/orders');
     });
 
+    app.get('*', function(req, res, next) {
+        res.status(404).render('errors/404');
+    });
+
     app.use((err, req, res, next) => {
         if(process.env.NODE_ENV == 'production') {
             if(err) {
