@@ -1,6 +1,6 @@
 const mysql = require('promise-mysql');
 
-const dbName = 'crudabrilinternship';
+let dbName = 'crudabrilinternship';
 const dbTestName = 'crudabrilinternshiptest';
 let basicConnection = {host : 'localhost', user : 'root', password : 'root'};
 let conn = null
