@@ -1,14 +1,4 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Produtos</title>
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="css/bootstrap-grid.min.css">
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-</head>
-<body>
+<% include header %>
     <div class="container p-2 mt-3 d-flex justify-content-center">
         <h1>CRUD de Produtos</h1>
     </div>
@@ -19,8 +9,8 @@
             <div class="col d-flex justify-content-center">Preço</div>
             <div class="col d-flex justify-content-center">Ações</div>
         </div>
-        <div class="row active border-bottom rounded p-1">
-            <%for(let i=0; i<products.length;i++) {%>
+        <%for(let i=0; i<products.length;i++) {%>
+            <div class="row active border-bottom rounded p-1">
                 <div class="col d-flex justify-content-center align-items-center">
                     <span><%=products[i].nome%></span>
                 </div>
@@ -34,8 +24,8 @@
                     <button type="button" class="btn btn-warning m-1">Editar</button>
                     <button type="button" class="btn btn-danger m-1">Deletar</button>
                 </div>
-            <%}%>
-        </div>
+            </div>
+        <%}%>
     </div>
     <div class="container mt-5">
         <div class="row bg-primary border-bottom rounded p-1 text-white">
@@ -44,16 +34,16 @@
         <div class="form row bg-light p-3 rounded">
             <form action="/products" method="post">
                 <div class="form-group">
-                    <label for="name">Nome</label>
-                    <input class="form-control" id="name" name="name" type="text" placeholder="Digite o nome do produto" />
+                    <label for="nome">Nome</label>
+                    <input class="form-control" id="nome" name="nome" type="text" placeholder="Digite o nome do produto" />
                 </div>
                 <div class="form-group">
-                    <label for="description">Descrição</label>
-                    <input class="form-control" id="description" name="description" type="text" placeholder="Digite a descrição do produto" />
+                    <label for="descricao">Descrição</label>
+                    <input class="form-control" id="descricao" name="descricao" type="text" placeholder="Digite a descrição do produto" />
                 </div>
                 <div class="form-group">
-                    <label for="price">Preço</label>
-                    <input class="form-control" id="price" name="price" type="text" placeholder="Digite o preço do produto" />
+                    <label for="preco">Preço</label>
+                    <input class="form-control" id="preco" name="preco" type="text" placeholder="Digite o preço do produto" />
                 </div>
                 <div class="d-flex flex-row-reverse">
                     <div class="m-1"><button type="submit" class="btn btn-outline-primary">Enviar</button></div>
@@ -62,5 +52,4 @@
             </form>
         </div>
     </div>
-</body>
-</html>
+<% include footer %>

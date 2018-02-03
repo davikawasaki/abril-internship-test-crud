@@ -1,14 +1,4 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Pedidos</title>
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="css/bootstrap-grid.min.css">
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-</head>
-<body>
+<% include header %>
     <div class="container p-2 mt-3 d-flex justify-content-center">
         <h1>CRUD de Pedidos</h1>
     </div>
@@ -16,40 +6,55 @@
         <div class="row bg-primary border-bottom rounded p-1 text-white">
             <div class="col d-flex justify-content-center">Produto</div>
             <div class="col d-flex justify-content-center">Cliente</div>
+            <div class="col d-flex justify-content-center">Ações</div>
         </div>
-        <div class="row active border-bottom rounded p-1">
-            <%for(let i=0; i<orders.length;i++) {%>
+        <%for(let i=0; i<orders.length;i++) {%>
+            <div class="row active border-bottom rounded p-1">
                 <div class="col d-flex justify-content-center align-items-center">
-                    <span><%=orders[i].id_produto%></span>
+                    <span>
+                        <%products.forEach(function(product){%>
+                            <%if(product.id === orders[i].id_produto){%>
+                                <%=product.nome%>
+                            <%}%>
+                        <%})%>
+                    </span>
                 </div>
                 <div class="col d-flex justify-content-center align-items-center">
-                    <span><%=orders[i].id_cliente%></span>
+                    <span>
+                        <%clients.forEach(function(client){%>
+                            <%if(client.id === orders[i].id_cliente){%>
+                                <%=client.nome%>
+                            <%}%>
+                        <%})%>
+                    </span>
                 </div>
                 <div class="col d-flex justify-content-center align-items-center">
                     <button type="button" class="btn btn-warning m-1">Editar</button>
                     <button type="button" class="btn btn-danger m-1">Deletar</button>
                 </div>
-            <%}%>
-        </div>
+            </div>
+        <%}%>
     </div>
     <div class="container mt-5">
         <div class="row bg-primary border-bottom rounded p-1 text-white">
             <div class="col d-flex justify-content-center">Cadastro/Atualização</div>
         </div>
         <div class="form row bg-light p-3 rounded">
-            <form action="/clients" method="post">
+            <form action="/orders" method="post">
                 <div class="form-group">
-                    <label for="product">Produto</label>
-                    <select class="form-control" id="product">
-                        <option>Caneta</option>
-                        <option>Lápis</option>
+                    <label for="id_produto">Produto</label>
+                    <select class="form-control" id="id_produto" name="id_produto">
+                        <%for(let i=0; i<products.length;i++) {%>
+                            <option value="<%=products[i].id%>"><%=products[i].nome%></option>
+                        <%}%>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="client">Cliente</label>
-                    <select class="form-control" id="client">
-                        <option>Roger</option>
-                        <option>Lais</option>
+                    <label for="id_cliente">Cliente</label>
+                    <select class="form-control" id="id_cliente" name="id_cliente">
+                        <%for(let i=0; i<clients.length;i++) {%>
+                            <option value="<%=clients[i].id%>"><%=clients[i].nome%></option>
+                        <%}%>
                     </select>
                 </div>
                 <div class="d-flex flex-row-reverse">
@@ -59,5 +64,4 @@
             </form>
         </div>
     </div>
-</body>
-</html>
+<% include footer %>

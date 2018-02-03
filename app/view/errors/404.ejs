@@ -4,24 +4,24 @@
         <title>Page not found</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
-        <!-- <link rel="shortcut icon" href="favicon.ico"> -->
-
-        <!-- <link rel="stylesheet" href="css/style.css" rel="stylesheet"> -->
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="css/bootstrap-grid.min.css">
+        <link rel="stylesheet" type="text/css" href="css/style.css">
     </head>
     <body>
-        <section class="banner">
-            <div class="wrapper">
-                <div class="main-title">
-                    <h1 class="primary-text">404</h1>
-                </div>
-                <div class="main-subtitle">
-                    <p>This page you accessed does not exist.</p>
-                </div>
-                <div class="banner-buttons">
-                    <a href="/">Return to home page</a>
+        <div class="container">
+            <div class="row d-flex justify-content-center align-items-center">
+                <div class="error-template text-center">
+                    <h1>Oops!</h1>
+                    <h2>404 Not Found</h2>
+                    <div class="error-details">
+                        Sorry, an error has occured, requested page was not found!
+                    </div>
+                    <div class="error-actions mt-3">
+                        <a href="/" class="btn btn-primary btn-lg">Take Me Home</a>
+                    </div>
                 </div>
             </div>
-        </section>
+        </div>
     </body>
 </html>
