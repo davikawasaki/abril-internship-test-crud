@@ -19,7 +19,7 @@ module.exports = class ClientsCtrl extends BaseCtrl {
      * @param {Function} next (event flow call)
      */
     getClients (req, res, next) {
-        this.list(req, res, next, 'clients');
+        this.list(req, res, next, 'clients', '');
     };
 
     /**
@@ -31,8 +31,14 @@ module.exports = class ClientsCtrl extends BaseCtrl {
      * @param {Object} app (express object)
      */
     registerClient (req, res, next) {
-        const client = req.body;
-        this.save(res, next, client, '/clients');
+        req.assert('nome', 'Nome é obrigatório!').notEmpty();
+        req.assert('email', 'Email é obrigatório!').notEmpty();
+        req.assert('telefone', 'Telefone é obrigatório!').notEmpty();
+        const valErrors = req.validationErrors();
+        if(!valErrors) {
+            const client = req.body;
+            this.save(res, next, client, '/clients');
+        } else this.list(req, res, next, 'clients', valErrors);
     };
 
     /**
@@ -44,8 +50,14 @@ module.exports = class ClientsCtrl extends BaseCtrl {
      * @param {Object} app (express object)
      */
     updateClient (req, res, next) {
-        const client = req.body;
-        this.update(res, next, client, '/clients');
+        req.assert('nome', 'Nome é obrigatório!').notEmpty();
+        req.assert('email', 'Email é obrigatório!').notEmpty();
+        req.assert('telefone', 'Telefone é obrigatório!').notEmpty();
+        const valErrors = req.validationErrors();
+        if(!valErrors) {
+            const client = req.body;            
+            this.update(res, next, client, '/clients');
+        } else this.list(req, res, next, 'clients', valErrors);
     };
 
     /**

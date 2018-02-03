@@ -10,18 +10,20 @@ module.exports = class BaseCtrl {
      * @param {Object} res (response)
      * @param {Function} next (event flow call)
      * @param {String} page ('home/index')
+     * @param {Object} errors
      */
-    list(req, res, next, page) {
+    list(req, res, next, page, errors) {
         this._dao.listAll()
             .then(response => {
                 // Receives a literal object and return a format depending on the request content negotiation
                 const self = this;
                 res.format({
                     html() {
-                        self.render(res, response, page);
+                        self.render(res, response, page, errors);
                     },
                     json() {
-                        res.json(response);
+                        if(errors) res.status(404).send(errors);
+                        else res.json(response);
                         self._dao.closeConnection();
                     }
                 });
@@ -60,8 +62,13 @@ module.exports = class BaseCtrl {
     update(res, next, object, page) {
         this._dao.updateById(object)
             .then(response => {
-                this._dao.closeConnection();
-                res.redirect(page);
+                const self = this;
+                res.format({
+                    json() {
+                        self._dao.closeConnection();
+                        res.json(response);
+                    }
+                });
             })
             // Throwing errors to the next element of express flow
             .catch(err => {
@@ -80,8 +87,13 @@ module.exports = class BaseCtrl {
     delete(res, next, idValue, page) {
         this._dao.deleteById(idValue)
             .then(response => {
-                this._dao.closeConnection();
-                res.redirect(page);
+                const self = this;
+                res.format({
+                    json() {
+                        self._dao.closeConnection();
+                        res.json(response);
+                    }
+                });
             })
             // Throwing errors to the next element of express flow
             .catch(err => {
@@ -96,10 +108,12 @@ module.exports = class BaseCtrl {
      * @param {Object} res (response)
      * @param {Array} results (results list from ProductsDAO)
      * @param {String} page (String page to be rendered)
+     * @param {Object} errors
      */
-    render(res, results, page) {
-        let obj = {}
-        obj[page] = results
+    render(res, results, page, errors) {
+        let obj = {};
+        obj[page] = results;
+        obj['error'] = errors;
         res.render(page, obj);
     };
 }

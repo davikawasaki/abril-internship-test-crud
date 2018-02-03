@@ -19,7 +19,7 @@ module.exports = class ProductsCtrl extends BaseCtrl {
      * @param {Function} next (event flow call)
      */
     getProducts (req, res, next) {
-        this.list(req, res, next, 'products');
+        this.list(req, res, next, 'products', '');
     };
 
     /**
@@ -31,8 +31,14 @@ module.exports = class ProductsCtrl extends BaseCtrl {
      * @param {Object} app (express object)
      */
     registerProduct (req, res, next) {
-        const product = req.body;
-        this.save(res, next, product, '/products');
+        req.assert('nome', 'Nome é obrigatório!').isEmpty();
+        req.assert('preco', 'Preço é obrigatório!').isEmpty();
+        const valErrors = req.validationErrors();
+        if(!valErrors) {
+            const product = req.body;
+            this.save(res, next, product, '/products');
+        }
+        else this.list(req, res, next, 'products', valErrors);
     };
 
     /**
@@ -44,8 +50,13 @@ module.exports = class ProductsCtrl extends BaseCtrl {
      * @param {Object} app (express object)
      */
     updateProduct (req, res, next) {
-        const product = req.body;
-        this.update(res, next, product, '/products');
+        req.assert('nome', 'Nome é obrigatório!').isEmpty();
+        req.assert('preco', 'Preço é obrigatório!').isEmpty();
+        const valErrors = req.validationErrors();
+        if(!valErrors) {
+            const product = req.body;
+            this.update(res, next, product, '/products');
+        } else this.list(req, res, next, 'products', valErrors);
     };
 
     /**
