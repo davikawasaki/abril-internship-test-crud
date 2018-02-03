@@ -16,7 +16,7 @@ module.exports = class OrdersCtrl extends BaseCtrl {
      * @param {Function} next (event flow call)
      */
     getOrders (req, res, next) {
-        this.listOrdersProductsClients(req, res, next);
+        this.listOrdersProductsClients(req, res, next, '');
     };
 
     /**
@@ -28,8 +28,13 @@ module.exports = class OrdersCtrl extends BaseCtrl {
      * @param {Object} app (express object)
      */
     registerOrder (req, res, next) {
-        const order = req.body;
-        this.save(res, next, order, '/orders');
+        req.assert('id_produto', 'Produto é obrigatório!').isEmpty();
+        req.assert('id_cliente', 'Cliente é obrigatório!').isEmpty();
+        const valErrors = req.validationErrors();
+        if(!valErrors) {
+            const order = req.body;
+            this.save(res, next, order, '/orders');
+        } else this.list(req, res, next, 'orders', valErrors);
     };
 
     /**
@@ -41,8 +46,13 @@ module.exports = class OrdersCtrl extends BaseCtrl {
      * @param {Object} app (express object)
      */
     updateOrder (req, res, next) {
-        const order = req.body;
-        this.update(res, next, order, '/orders');
+        req.assert('id_produto', 'Produto é obrigatório!').isEmpty();
+        req.assert('id_cliente', 'Cliente é obrigatório!').isEmpty();
+        const valErrors = req.validationErrors();
+        if(!valErrors) {
+            const order = req.body;
+            this.update(res, next, order, '/orders');
+        } else this.list(req, res, next, 'orders', valErrors);
     };
 
     /**
@@ -63,8 +73,9 @@ module.exports = class OrdersCtrl extends BaseCtrl {
      * @param {Object} req (request)
      * @param {Object} res (response)
      * @param {Function} next (event flow call)
+     * @param {Object} errors
      */
-    listOrdersProductsClients(req, res, next) {
+    listOrdersProductsClients(req, res, next, errors) {
         let obj = {}
         const clientsDAO = new ClientsDAO();
         const productsDAO = new ProductsDAO();
@@ -81,6 +92,7 @@ module.exports = class OrdersCtrl extends BaseCtrl {
             })
             .then(response => {
                 obj['products'] = response;
+                obj['error'] = errors;
                 productsDAO.closeConnection();
                 const self = this;
                 res.format({
