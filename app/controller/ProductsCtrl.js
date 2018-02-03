@@ -1,15 +1,9 @@
-const connectionFactory = require('../infra/connectionFactory');
 const ProductsDAO = require('../infra/ProductsDAO');
 const BaseCtrl = require('../controller/BaseCtrl');
 
-let connection = null;
-
-connectionFactory.createDBConnection(true)
-    .then(conn => connection = conn);
-
 module.exports = class ProductsCtrl extends BaseCtrl {
     constructor(app) {
-        super(app, new ProductsDAO(connection));
+        super(app, new ProductsDAO());
     }
 
     /**
@@ -31,8 +25,8 @@ module.exports = class ProductsCtrl extends BaseCtrl {
      * @param {Object} app (express object)
      */
     registerProduct (req, res, next) {
-        req.assert('nome', 'Nome é obrigatório!').isEmpty();
-        req.assert('preco', 'Preço é obrigatório!').isEmpty();
+        req.assert('nome', 'Nome é obrigatório!').notEmpty();
+        req.assert('preco', 'Preço é obrigatório!').notEmpty();
         const valErrors = req.validationErrors();
         if(!valErrors) {
             const product = req.body;
@@ -50,8 +44,8 @@ module.exports = class ProductsCtrl extends BaseCtrl {
      * @param {Object} app (express object)
      */
     updateProduct (req, res, next) {
-        req.assert('nome', 'Nome é obrigatório!').isEmpty();
-        req.assert('preco', 'Preço é obrigatório!').isEmpty();
+        req.assert('nome', 'Nome é obrigatório!').notEmpty();
+        req.assert('preco', 'Preço é obrigatório!').notEmpty();
         const valErrors = req.validationErrors();
         if(!valErrors) {
             const product = req.body;

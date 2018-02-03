@@ -1,15 +1,9 @@
-const connectionFactory = require('../infra/connectionFactory');
 const ClientsDAO = require('../infra/ClientsDAO');
 const BaseCtrl = require('../controller/BaseCtrl');
 
-let connection = null;
-
-connectionFactory.createDBConnection(true)
-    .then(conn => connection = conn);
-
 module.exports = class ClientsCtrl extends BaseCtrl {
     constructor(app) {
-        super(app, new ClientsDAO(connection));
+        super(app, new ClientsDAO());
     }
 
     /**

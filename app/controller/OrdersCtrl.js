@@ -1,4 +1,3 @@
-const connectionFactory = require('../infra/connectionFactory');
 const OrdersDAO = require('../infra/OrdersDAO');
 const ProductsDAO = require('../infra/ProductsDAO');
 const ClientsDAO = require('../infra/ClientsDAO');
@@ -28,8 +27,8 @@ module.exports = class OrdersCtrl extends BaseCtrl {
      * @param {Object} app (express object)
      */
     registerOrder (req, res, next) {
-        req.assert('id_produto', 'Produto é obrigatório!').isEmpty();
-        req.assert('id_cliente', 'Cliente é obrigatório!').isEmpty();
+        req.assert('id_produto', 'Produto é obrigatório!').notEmpty();
+        req.assert('id_cliente', 'Cliente é obrigatório!').notEmpty();
         const valErrors = req.validationErrors();
         if(!valErrors) {
             const order = req.body;
@@ -46,8 +45,8 @@ module.exports = class OrdersCtrl extends BaseCtrl {
      * @param {Object} app (express object)
      */
     updateOrder (req, res, next) {
-        req.assert('id_produto', 'Produto é obrigatório!').isEmpty();
-        req.assert('id_cliente', 'Cliente é obrigatório!').isEmpty();
+        req.assert('id_produto', 'Produto é obrigatório!').notEmpty();
+        req.assert('id_cliente', 'Cliente é obrigatório!').notEmpty();
         const valErrors = req.validationErrors();
         if(!valErrors) {
             const order = req.body;
@@ -82,18 +81,15 @@ module.exports = class OrdersCtrl extends BaseCtrl {
         this._dao.listAll()
             .then(response => {
                 obj['orders'] = response;
-                this._dao.closeConnection();
                 return clientsDAO.listAll();
             })
             .then(response => {
                 obj['clients'] = response;
-                clientsDAO.closeConnection();
                 return productsDAO.listAll();
             })
             .then(response => {
                 obj['products'] = response;
                 obj['error'] = errors;
-                productsDAO.closeConnection();
                 const self = this;
                 res.format({
                     html() {

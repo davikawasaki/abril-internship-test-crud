@@ -24,7 +24,6 @@ module.exports = class BaseCtrl {
                     json() {
                         if(errors) res.status(404).send(errors);
                         else res.json(response);
-                        self._dao.closeConnection();
                     }
                 });
             })
@@ -41,15 +40,9 @@ module.exports = class BaseCtrl {
      */
     save(res, next, object, page) {
         this._dao.insertOne(object)
-            .then(response => {
-                this._dao.closeConnection();
-                res.redirect(page);
-            })
+            .then(response => res.redirect(page))
             // Throwing errors to the next element of express flow
-            .catch(err => {
-                this._dao.closeConnection();
-                next(err);
-            });
+            .catch(err => next(err));
     };
 
     /**
@@ -62,19 +55,14 @@ module.exports = class BaseCtrl {
     update(res, next, object, page) {
         this._dao.updateById(object)
             .then(response => {
-                const self = this;
                 res.format({
                     json() {
-                        self._dao.closeConnection();
                         res.json(response);
                     }
                 });
             })
             // Throwing errors to the next element of express flow
-            .catch(err => {
-                this._dao.closeConnection();
-                next(err);
-            });
+            .catch(err => next(err));
     };
 
     /**
@@ -87,19 +75,14 @@ module.exports = class BaseCtrl {
     delete(res, next, idValue, page) {
         this._dao.deleteById(idValue)
             .then(response => {
-                const self = this;
                 res.format({
                     json() {
-                        self._dao.closeConnection();
                         res.json(response);
                     }
                 });
             })
             // Throwing errors to the next element of express flow
-            .catch(err => {
-                this._dao.closeConnection();
-                next(err);
-            });
+            .catch(err => next(err));
     };
 
     /**
