@@ -1,5 +1,7 @@
 const connectionFactory = require('../infra/connectionFactory');
 const OrdersDAO = require('../infra/OrdersDAO');
+const ProductsDAO = require('../infra/ProductsDAO');
+const ClientsDAO = require('../infra/ClientsDAO');
 const BaseCtrl = require('../controller/BaseCtrl');
 
 module.exports = class OrdersCtrl extends BaseCtrl {
@@ -14,7 +16,7 @@ module.exports = class OrdersCtrl extends BaseCtrl {
      * @param {Function} next (event flow call)
      */
     getOrders (req, res, next) {
-        this.list(req, res, next, 'orders');
+        this.listOrdersProductsClients(req, res, next);
     };
 
     /**
@@ -54,6 +56,44 @@ module.exports = class OrdersCtrl extends BaseCtrl {
     deleteOrder (req, res, next) {
         const id = req.body.id;
         this.delete(res, next, id, '/orders');
+    };
+
+    /**
+     * Access DAO through DB connection to list orders/products/clients objects and render to orders page
+     * @param {Object} req (request)
+     * @param {Object} res (response)
+     * @param {Function} next (event flow call)
+     */
+    listOrdersProductsClients(req, res, next) {
+        let obj = {}
+        const clientsDAO = new ClientsDAO();
+        const productsDAO = new ProductsDAO();
+        this._dao.listAll()
+            .then(response => {
+                obj['orders'] = response;
+                this._dao.closeConnection();
+                return clientsDAO.listAll();
+            })
+            .then(response => {
+                obj['clients'] = response;
+                clientsDAO.closeConnection();
+                return productsDAO.listAll();
+            })
+            .then(response => {
+                obj['products'] = response;
+                productsDAO.closeConnection();
+                const self = this;
+                res.format({
+                    html() {
+                        res.render('orders', obj);
+                    },
+                    json() {
+                        res.json(obj);
+                    }
+                });
+            })
+            // Throwing errors to the next element of express flow
+            .catch(err => next(err));
     };
 
 }
