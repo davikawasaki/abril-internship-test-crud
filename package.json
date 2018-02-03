@@ -1,0 +1,30 @@
+{
+  "name": "abril-internship-test-crud",
+  "version": "1.0.0",
+  "description": "Abril Internship Test - Inventory Control CRUD",
+  "main": "main.js",
+  "scripts": {
+    "start": "nodemon main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davikawasaki/abril-internship-test-crud.git"
+  },
+  "author": "Davi Kawasaki",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/davikawasaki/abril-internship-test-crud/issues"
+  },
+  "homepage": "https://github.com/davikawasaki/abril-internship-test-crud#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "consign": "^0.1.6",
+    "ejs": "^2.5.7",
+    "express": "^4.16.2",
+    "promise-mysql": "^3.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.14.11"
+  }
+}
