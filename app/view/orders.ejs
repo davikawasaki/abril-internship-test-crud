@@ -2,6 +2,14 @@
     <div class="container p-2 mt-3 d-flex justify-content-center">
         <h1>CRUD de Pedidos</h1>
     </div>
+    <%if(error){%>
+        <div class="container d-flex justify-content-center alert alert-danger" role="alert">
+            <span>Erros:&nbsp;</span>
+            <%for(let i=0; i<error.length;i++) {%>
+                <span><%=error[i].msg%>&nbsp;</span>
+            <%}%>
+        </div>
+    <%}else{}%>
     <div class="container">
         <div class="row bg-primary border-bottom rounded p-1 text-white">
             <div class="col d-flex justify-content-center">Produto</div>
@@ -29,8 +37,8 @@
                     </span>
                 </div>
                 <div class="col d-flex justify-content-center align-items-center">
-                    <button type="button" class="btn btn-warning m-1">Editar</button>
-                    <button type="button" class="btn btn-danger m-1">Deletar</button>
+                    <button type="button" class="btn btn-warning m-1" id="btn-edit-order" onclick="fillOrderForm(event, <%=orders[i].id%>, '<%=orders[i].id_produto%>', '<%=orders[i].id_cliente%>')">Editar</button>
+                    <button type="button" class="btn btn-danger m-1" id="btn-delete-order" onclick="deleteOrder(event, <%=orders[i].id%>)">Deletar</button>
                 </div>
             </div>
         <%}%>
@@ -58,10 +66,99 @@
                     </select>
                 </div>
                 <div class="d-flex flex-row-reverse">
-                    <div class="m-1"><button type="submit" class="btn btn-outline-primary">Enviar</button></div>
-                    <div class="m-1"><button type="submit" class="btn btn-outline-secondary">Limpar</button></div>
+                    <div class="m-1"><button onclick="editOrder(event)" id="btn-edit-send" class="btn btn-outline-primary">Editar</button></div>
+                    <div class="m-1"><button type="submit" id="btn-save-send" class="btn btn-outline-primary">Enviar</button></div>
+                    <div class="m-1"><button onclick="clearForm(event)" class="btn btn-outline-secondary">Limpar</button></div>
                 </div>
             </form>
         </div>
     </div>
+    <script>
+        let orderStoredId = null;
+
+        function deleteOrder(event, id) {
+            event.preventDefault();
+            let xhr = new XMLHttpRequest();
+            xhr.open("DELETE", '/orders', true);
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.setRequestHeader("Accept", "application/json");
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState == 4) {
+                    if (xhr.status == 200) {
+                        alert('Pedido deletado com sucesso!');
+                        location.reload();
+                    } else {
+                        alert('Não foi possível deletar esse pedido! Tente novamente mais tarde.');
+                    }
+                }
+            };
+            xhr.send(JSON.stringify({id}));
+        }
+
+        function fillOrderForm(event, orderId, orderProductId, orderClientId) {
+            let $ = document.querySelector.bind(document);
+            let selectProductId = $('#id_produto');
+            let selectClientId = $('#id_cliente');
+            let btnEditSend = $('#btn-edit-send');
+            let btnSaveSend = $('#btn-save-send');
+
+            selectProductId.value = orderProductId;
+            selectClientId.value = orderClientId;
+            orderStoredId = orderId;
+
+            btnEditSend.style.display = 'block';
+            btnSaveSend.style.display = 'none';
+        }
+
+        function editOrder(event) {
+            event.preventDefault();
+            let $ = document.querySelector.bind(document);
+            let selectProductId = $('#id_produto');
+            let selectClientId = $('#id_cliente');
+            let order = {
+                id: orderStoredId,
+                id_produto: selectProductId.value,
+                id_cliente: selectClientId.value
+            };
+            let xhr = new XMLHttpRequest();
+            xhr.open("PUT", '/orders', true);
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.setRequestHeader("Accept", "application/json");
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState == 4) {
+                    if (xhr.status == 200) {
+                        alert('Pedido editado com sucesso!');
+                        location.reload();
+                    } else {
+                        if(xhr.responseText) {
+                            const errors = JSON.parse(xhr.responseText);
+                            errMsg = '';
+                            errors.forEach(err => {
+                                errMsg = errMsg + ' ' + err.msg;
+                            });
+                            if(errMsg) alert(errMsg);
+                            else alert('Ocorreu um erro ao editar esse pedido! Tente novamente mais tarde.');
+                        } else alert('Ocorreu um erro ao editar esse pedido! Tente novamente mais tarde.');
+                    }
+                }
+            };
+            xhr.send(JSON.stringify(order));
+        }
+
+        function clearForm(event) {
+            event.preventDefault();
+            let $ = document.querySelector.bind(document);
+            let selectProductId = $('#id_produto');
+            let selectClientId = $('#id_cliente');
+
+            let btnEditSend = $('#btn-edit-send');
+            let btnSaveSend = $('#btn-save-send');
+
+            selectProductId.selectedIndex = 0;
+            selectClientId.selectedIndex = 0;
+
+            btnEditSend.style.display = 'none';
+            btnSaveSend.style.display = 'block';
+        }
+    </script>
 <% include footer %>
