@@ -7,3 +7,7 @@ div.list ul li {
 form {
     width: 100%;
 }
+
+html.height-100, html.height-100 body, html.height-100 body div.container, html.height-100 body div.row {
+    height: 100%;
+}
